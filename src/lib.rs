@@ -21,3 +21,36 @@ pub fn lambda_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
     TokenStream::from(expanded)
 }
+
+#[proc_macro_attribute]
+pub fn local_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    let input_fn = parse_macro_input!(item as ItemFn);
+    let fn_name = &input_fn.sig.ident;
+
+    let expanded = quote! {
+        #input_fn
+
+
+        fn generate_default_lambda_event() -> lambda_runtime::LambdaEvent<Value> {
+            lambda_runtime::LambdaEvent::new(serde_json::Value::default(), lambda_runtime::Context::default())
+        }
+
+        #[tokio::main]
+        async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+            let event = generate_default_lambda_event();
+            let result = #fn_name(event).await?;
+
+            println!("{:?}", result);
+            Ok(())
+        }
+    };
+
+    TokenStream::from(expanded)
+}
+
+fn check_if_running_in_lambda() -> bool {
+    // look through all the env variables. and look for a variable that starts with CARGO_LAMBDA
+
+    std::env::vars().any(|(key, _)| key.starts_with("CARGO_LAMBDA"))
+    // This is a simple check, you can expand it to check for more specific variables if needed.
+}
