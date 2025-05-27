@@ -40,7 +40,7 @@ pub fn local_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
             let event = generate_default_lambda_event();
             let result = #fn_name(event).await?;
 
-            println!("{:#?}", result);
+            print!("{:?}", result);
             Ok(())
         }
     };
