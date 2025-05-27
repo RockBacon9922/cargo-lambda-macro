@@ -40,17 +40,10 @@ pub fn local_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
             let event = generate_default_lambda_event();
             let result = #fn_name(event).await?;
 
-            println!("{:?}", result);
+            println!("{:#?}", result);
             Ok(())
         }
     };
 
     TokenStream::from(expanded)
-}
-
-fn check_if_running_in_lambda() -> bool {
-    // look through all the env variables. and look for a variable that starts with CARGO_LAMBDA
-
-    std::env::vars().any(|(key, _)| key.starts_with("CARGO_LAMBDA"))
-    // This is a simple check, you can expand it to check for more specific variables if needed.
 }
