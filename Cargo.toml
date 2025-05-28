@@ -4,9 +4,10 @@ version = "0.1.0"
 edition = "2024"
 authors = ["William Stoneham <william.stoneham04@gmail.com>"]
 
-[lib]
-proc-macro = true
-
 [dependencies]
-quote = "1"
-syn = { version = "2", features = ["full"] }
+lambda_macro = { path = "lambda_macro" }
+payload = { path = "payload" }
+
+
+[workspace]
+members = ["lambda_macro", "payload"]
